@@ -35,41 +35,33 @@ def get_neighbors(state):
             new_state = list(state)
             # Swap blank with the neighboring tile
             new_state[idx], new_state[new_idx] = new_state[new_idx], new_state[idx]
-            # Convert list back to tuple and store with a move description
+            # Convert list back to tuple and store with a move description bubble down
             neighbors.append((tuple(new_state), f"Move tile {state[new_idx]}"))
 
     return neighbors
 
 def a_star(start, goal, heuristic):
-    """
-    Main A* algorithm.
-    We use a priority queue to pick the state with the lowest estimated total cost (f = g + h).
-    g: Cost to reach current state
-    h: Heuristic estimate to goal
-    The algorithm stops once the goal is reached or all options are exhausted.
-    """
     frontier = []  # This is our priority queue of states to explore
     heapq.heappush(frontier, (heuristic(start, goal), 0, start, []))  # Push the start node
-    visited = set()  # To avoid revisiting the same state
+    visited = set()  # avoid expanding the same state
 
     while frontier:
-        f, g, state, path = heapq.heappop(frontier)  # Always expand the most promising node
+        f, g, state, path = heapq.heappop(frontier)  # Removes and returns the smallest element from the heap
 
         if state == goal:
-            return path + [state]  # Found the goal — return the full path to it
+            return path + [state]  # Found the goal
 
         if state in visited:
-            continue  # Skip already explored states
+            continue  # Skip explored states
         visited.add(state)
 
         for new_state, move in get_neighbors(state):
             if new_state not in visited:
                 h = heuristic(new_state, goal)  # Estimate cost to goal
-                # Push the new state into the frontier with updated cost and path
-                heapq.heappush(frontier, (g + 1 + h, g + 1, new_state, path + [state]))
-
+                heapq.heappush(frontier, (g + 1 + h, g + 1, new_state, path + [state])) # Adds a new state to the frontier
     return None  # No solution was found (shouldn't happen if puzzle is solvable)
 
+# Compared lexicographically
 def print_board(state):
     """
     Helper function to print the puzzle nicely as a 3x3 grid.
@@ -82,9 +74,9 @@ def print_board(state):
 
 # -------------------------------
 # Define the START and GOAL states of the puzzle
-start = (7, 2, 4,
-         5, 0, 6,
-         8, 3, 1)  # Challenging start state
+start = (8, 6, 7,
+         2, 5, 4,
+         3, 0, 1)  # Challenging start state
 
 goal = (1, 2, 3,
         4, 5, 6,

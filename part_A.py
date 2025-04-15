@@ -35,7 +35,6 @@ def get_neighbors(state):
 
 def a_star(start, goal, heuristic):
     """
-    A* Search Algorithm using the provided heuristic (in this case, h1).
     - f(n) = g(n) + h(n)
     - g(n): cost to reach current state (depth)
     - h(n): estimated cost from current to goal (heuristic)
@@ -45,8 +44,8 @@ def a_star(start, goal, heuristic):
     heapq.heappush(frontier, (heuristic(start, goal), 0, start, []))  # Push initial state
     visited = set()  # Set of already-explored states to avoid revisits
 
-    while frontier:
-        f, g, state, path = heapq.heappop(frontier)  # Get state with lowest f-score
+    while frontier: # Binary heap (log n time)
+        f, g, state, path = heapq.heappop(frontier)  # Pops the state with the lowest f-score
 
         if state == goal:
             return path + [state]  # Goal reached, return full path
@@ -56,7 +55,7 @@ def a_star(start, goal, heuristic):
         visited.add(state)
 
         # Explore neighbors and add them to the frontier
-        for new_state, move in get_neighbors(state):
+        for new_state, move in get_neighbors(state): # Sliding the blank tile to all possible positions
             if new_state not in visited:
                 h = heuristic(new_state, goal)  # Estimate cost from new_state to goal
                 heapq.heappush(frontier, (g + 1 + h, g + 1, new_state, path + [state]))
@@ -75,9 +74,9 @@ def print_board(state):
 
 # -------------------------------
 # Define START and GOAL states
-start = (7, 2, 4,
-         5, 0, 6,
-         8, 3, 1)  # More difficult start configuration
+start = (8, 6, 7,
+         2, 5, 4,
+         3, 0, 1)  # Challenging start state
 
 goal = (1, 2, 3,
         4, 5, 6,
